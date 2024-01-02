@@ -13,7 +13,7 @@ DOMAIN = 'custom_filters'
 def to_my_ascii_json(string):
     return json.dumps(string, ensure_ascii=False)
 
-def finder_t5(string):
+def finder_tfive(string):
     """Convert sring to Finder T5 Value"""
 
     # Convert decimal string to an integer
@@ -25,11 +25,16 @@ def finder_t5(string):
 
     return measurement_value *10**exponent_value
 
+def addFilters(env):
+    env.filters['to_my_ascii_json'] = to_my_ascii_json
+    env.filters['finder_tfive'] = finder_tfive
+    env.globals['finder_tfive'] = finder_tfive
 
 async def async_setup(hass: HomeAssistant, yaml_config: ConfigType):
-    _NO_HASS_ENV.filters['to_my_ascii_json'] = to_my_ascii_json
-    _NO_HASS_ENV.filters['finder_t5'] = finder_t5
-    _NO_HASS_ENV.globals['finder_t5'] = finder_t5
+    addFilters(_NO_HASS_ENV)
+    #_NO_HASS_ENV.filters['to_my_ascii_json'] = to_my_ascii_json
+    #_NO_HASS_ENV.filters['finder_tfive'] = finder_tfive
+    #_NO_HASS_ENV.globals['finder_tfive'] = finder_tfive
 
     if DOMAIN in yaml_config and not hass.config_entries.async_entries(DOMAIN):
         hass.async_create_task(hass.config_entries.flow.async_init(
@@ -42,9 +47,15 @@ async def async_setup(hass: HomeAssistant, yaml_config: ConfigType):
 async def async_setup_entry(hass: HomeAssistant, _: ConfigEntry):
     for env in hass.data.values():
         if isinstance(env, TemplateEnvironment):
-            env.filters['to_my_ascii_json'] = to_my_ascii_json
-            env.filters['finder_t5'] = finder_t5
-            env.globals['finder_t5'] = finder_t5
+            addFilters(env)
+            #env.filters['to_my_ascii_json'] = to_my_ascii_json
+            #env.filters['finder_tfive'] = finder_tfive
+            #env.globals['finder_tfive'] = finder_tfive
+        if isinstance(env, CustomTemplateEnvironment):
+            addFilters(env)
+            #env.filters['to_my_ascii_json'] = to_my_ascii_json
+            #env.filters['finder_tfive'] = finder_tfive
+            #env.globals['finder_tfive'] = finder_tfive
 
     CustomTemplateEnvironment.base_init = cast(Any, TemplateEnvironment.__init__)
     TemplateEnvironment.__init__ = CustomTemplateEnvironment.init
@@ -64,6 +75,7 @@ class CustomTemplateEnvironment:
     def init(*args, **kwargs):
         CustomTemplateEnvironment.base_init(*args, **kwargs)
         env = args[0]
-        env.filters['to_my_ascii_json'] = to_my_ascii_json
-        env.filters['finder_t5'] = finder_t5
-        env.globals['finder_t5'] = finder_t5
+        addFilters(env)
+        #env.filters['to_my_ascii_json'] = to_my_ascii_json
+        #env.filters['finder_tfive'] = finder_tfive
+        #env.globals['finder_tfive'] = finder_tfive
