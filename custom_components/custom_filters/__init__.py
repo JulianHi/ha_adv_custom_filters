@@ -29,6 +29,7 @@ def finder_t5(string):
 async def async_setup(hass: HomeAssistant, yaml_config: ConfigType):
     _NO_HASS_ENV.filters['to_ascii_json'] = to_ascii_json
     _NO_HASS_ENV.filters['finder_t5'] = finder_t5
+    _NO_HASS_ENV.globals['finder_t5'] = finder_t5
 
     if DOMAIN in yaml_config and not hass.config_entries.async_entries(DOMAIN):
         hass.async_create_task(hass.config_entries.flow.async_init(
@@ -43,6 +44,7 @@ async def async_setup_entry(hass: HomeAssistant, _: ConfigEntry):
         if isinstance(env, TemplateEnvironment):
             env.filters['to_ascii_json'] = to_ascii_json
             env.filters['finder_t5'] = finder_t5
+            env.globals['finder_t5'] = finder_t5
 
     CustomTemplateEnvironment.base_init = cast(Any, TemplateEnvironment.__init__)
     TemplateEnvironment.__init__ = CustomTemplateEnvironment.init
@@ -64,3 +66,4 @@ class CustomTemplateEnvironment:
         env = args[0]
         env.filters['to_ascii_json'] = to_ascii_json
         env.filters['finder_t5'] = finder_t5
+        env.globals['finder_t5'] = finder_t5
