@@ -10,7 +10,7 @@ from homeassistant.helpers.typing import ConfigType
 DOMAIN = 'custom_filters'
 
 
-def to_ascii_json(string):
+def to_my_ascii_json(string):
     return json.dumps(string, ensure_ascii=False)
 
 def finder_t5(string):
@@ -27,7 +27,7 @@ def finder_t5(string):
 
 
 async def async_setup(hass: HomeAssistant, yaml_config: ConfigType):
-    _NO_HASS_ENV.filters['to_ascii_json'] = to_ascii_json
+    _NO_HASS_ENV.filters['to_my_ascii_json'] = to_my_ascii_json
     _NO_HASS_ENV.filters['finder_t5'] = finder_t5
     _NO_HASS_ENV.globals['finder_t5'] = finder_t5
 
@@ -42,7 +42,7 @@ async def async_setup(hass: HomeAssistant, yaml_config: ConfigType):
 async def async_setup_entry(hass: HomeAssistant, _: ConfigEntry):
     for env in hass.data.values():
         if isinstance(env, TemplateEnvironment):
-            env.filters['to_ascii_json'] = to_ascii_json
+            env.filters['to_my_ascii_json'] = to_my_ascii_json
             env.filters['finder_t5'] = finder_t5
             env.globals['finder_t5'] = finder_t5
 
@@ -64,6 +64,6 @@ class CustomTemplateEnvironment:
     def init(*args, **kwargs):
         CustomTemplateEnvironment.base_init(*args, **kwargs)
         env = args[0]
-        env.filters['to_ascii_json'] = to_ascii_json
+        env.filters['to_my_ascii_json'] = to_my_ascii_json
         env.filters['finder_t5'] = finder_t5
         env.globals['finder_t5'] = finder_t5
