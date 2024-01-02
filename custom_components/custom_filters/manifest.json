@@ -3,8 +3,8 @@
   "name": "Custom filters for Jinja",
   "version": "0.0.2",
   "documentation": "https://github.com/dext0r/ha_custom_filters",
-  "dependencies": [],
-  "requirements": [],
+  "dependencies": ["template"],
+  "requirements": ["jinja2"],
   "config_flow": true,
   "codeowners": [ "@dext0r" ]
 }
